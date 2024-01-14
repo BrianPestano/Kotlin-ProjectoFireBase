@@ -11,6 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal.pantallaInicio
+import com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal.pantallaRegistro
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +28,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    // Crea el NavController
+                    val navController = rememberNavController()
 
+                    // Configuración del sistema de navegación
+                    SetupNavigation(navController)
                 }
             }
         }
@@ -42,5 +52,21 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     ProyectoFinalFireBaseBrianyLaurenTheme {
         Greeting("Android")
+    }
+}
+
+@Composable
+fun SetupNavigation(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "pantallaInicio") {
+        composable("pantallaInicio") {
+            // Llamada a la función  directamente con el navController
+            pantallaInicio(navController)
+        }
+        composable("pantallaRegistro") {
+            pantallaRegistro(navController)
+        }
+        composable("pantallaInicio") {
+            pantallaInicio(navController)
+        }
     }
 }

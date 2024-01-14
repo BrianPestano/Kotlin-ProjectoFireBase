@@ -1,4 +1,4 @@
-package CreacionVideoJuego
+package com.example.proyectofinalfirebasebrianylauren.CreacionVideoJuego
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

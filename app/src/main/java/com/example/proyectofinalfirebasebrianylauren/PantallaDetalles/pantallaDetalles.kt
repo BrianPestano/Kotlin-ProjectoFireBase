@@ -1,4 +1,4 @@
-package PantallaDetalles
+package com.example.proyectofinalfirebasebrianylauren.PantallaDetalles
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
