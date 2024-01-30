@@ -1,7 +1,6 @@
 package com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*

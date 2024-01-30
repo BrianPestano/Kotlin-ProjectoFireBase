@@ -27,11 +27,11 @@ import com.example.proyectofinalfirebasebrianylauren.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun pantallaInicio(navController: NavHostController) {
+fun pantallaLogin(navController: NavHostController) {
 
     var nombreUsuario by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isLoginEnabled by remember { mutableStateOf(false) }
+    var isLoginEnabled by remember { mutableStateOf(true) }
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isTermsAccepted by remember { mutableStateOf(false) }
 
@@ -76,7 +76,7 @@ fun pantallaInicio(navController: NavHostController) {
                 value = nombreUsuario,
                 onValueChange = {
                     nombreUsuario = it
-                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted)
+                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted,isLoginEnabled)
                 },
                 label = { Text(text = "Nombre de Usuario") },
                 leadingIcon = {
@@ -106,7 +106,7 @@ fun pantallaInicio(navController: NavHostController) {
                 value = password,
                 onValueChange = {
                     password = it
-                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted)
+                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted,isLoginEnabled)
                 },
                 label = { Text(text = "Contraseña") },
                 leadingIcon = {
@@ -151,7 +151,7 @@ fun pantallaInicio(navController: NavHostController) {
                 checked = isTermsAccepted,
                 onCheckedChange = {
                     isTermsAccepted = it
-                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted)
+                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted,isLoginEnabled)
                 },
                 modifier = Modifier.padding(end = 8.dp)
             )
@@ -187,7 +187,7 @@ fun pantallaInicio(navController: NavHostController) {
     }
 }
 
-private fun updateLoginButtonState(nombreUsuario: String, password: String, isTermsAccepted: Boolean) {
+private fun updateLoginButtonState(nombreUsuario: String, password: String, isTermsAccepted: Boolean, isLoginEnabled: Boolean) {
     // Verificar si ambos campos no están vacíos
     val isNotEmpty = nombreUsuario.isNotEmpty() && password.isNotEmpty()
 
@@ -196,4 +196,7 @@ private fun updateLoginButtonState(nombreUsuario: String, password: String, isTe
 
     // Verificar que la contraseña tenga una longitud mínima de 8 caracteres
     val isPasswordValid = password.length >= 8
+
+    // Actualizar el estado del botón de inicio de sesión
+    val isLoginEnabled = isNotEmpty && isUsernameValid && isPasswordValid && isTermsAccepted
 }

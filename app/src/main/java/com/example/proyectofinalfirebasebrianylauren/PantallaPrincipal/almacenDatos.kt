@@ -1,6 +1,2 @@
 package com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import com.example.proyectofinalfirebasebrianylauren.R
-
