@@ -23,18 +23,21 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectofinalfirebasebrianylauren.R
+import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelLogin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun pantallaRegistro(navController: NavHostController) {
 
-    var nombreUsuario by remember { mutableStateOf("") }
     var correoElectronico by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isRegistrationEnabled by remember { mutableStateOf(false) }
+    var isRegistrationEnabled by remember { mutableStateOf(true) }
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isTermsAccepted by remember { mutableStateOf(false) }
+    var viewmodeldememoria : ViewModelLogin = viewModel()
+    var error by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -68,110 +71,80 @@ fun pantallaRegistro(navController: NavHostController) {
         // Espaciador entre la imagen y los campos de entrada
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Campo de entrada para el nombre de usuario
-        Column(
-            modifier = Modifier
-                .padding(16.dp),
-        ) {
-            OutlinedTextField(
-                value = nombreUsuario,
-                onValueChange = {
-                    nombreUsuario = it
-                    updateRegistrationButtonState(nombreUsuario, correoElectronico, password, isTermsAccepted)
-                },
-                label = { Text(text = "Nombre de Usuario") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = null
-                    )
-                },
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        // Mover el foco al siguiente campo o ejecutar una acción
-                    }
-                )
-            )
-
-            // Espaciador entre elementos
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campo de entrada para el correo electrónico
-            OutlinedTextField(
-                value = correoElectronico,
-                onValueChange = {
-                    correoElectronico = it
-                    updateRegistrationButtonState(nombreUsuario, correoElectronico, password, isTermsAccepted)
-                },
-                label = { Text(text = "Correo Electrónico") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Email,
-                        contentDescription = null
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        // Mover el foco al siguiente campo o ejecutar una acción
-                    }
-                )
-            )
-
-            // Espaciador entre elementos
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campo de entrada para la contraseña
-            OutlinedTextField(
-                value = password,
-                onValueChange = {
-                    password = it
-                    updateRegistrationButtonState(nombreUsuario, correoElectronico, password, isTermsAccepted)
-                },
-                label = { Text(text = "Contraseña") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = null
-                    )
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            isPasswordVisible = !isPasswordVisible
-                        }
-                    ) {
+                    .padding(16.dp),
+            ) {
+                // Campo de entrada para el correo electrónico
+                OutlinedTextField(
+                    value = correoElectronico,
+                    onValueChange = {
+                        correoElectronico = it
+                        updateRegistrationButtonState(correoElectronico, password, isTermsAccepted, isRegistrationEnabled)
+                    },
+                    label = { Text(text = "Correo Electrónico") },
+                    leadingIcon = {
                         Icon(
-                            imageVector = if (isPasswordVisible) Icons.Default.Done else Icons.Default.Close,
+                            imageVector = Icons.Default.Email,
                             contentDescription = null
                         )
-                    }
-                },
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        // Puedes manejar la acción de registro aquí
-                    }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            // Mover el foco al siguiente campo o ejecutar una acción
+                        }
+                    )
                 )
-            )
-        }
+
+                // Espaciador entre elementos
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Campo de entrada para la contraseña
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        updateRegistrationButtonState(correoElectronico, password, isTermsAccepted, isRegistrationEnabled)
+                    },
+                    label = { Text(text = "Contraseña") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = null
+                        )
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                isPasswordVisible = !isPasswordVisible
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (isPasswordVisible) Icons.Default.Done else Icons.Default.Close,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            // Puedes manejar la acción de registro aquí
+                        }
+                    )
+                )
+            }
 
         // Checkbox para aceptar términos
         Row(
@@ -182,7 +155,7 @@ fun pantallaRegistro(navController: NavHostController) {
                 checked = isTermsAccepted,
                 onCheckedChange = {
                     isTermsAccepted = it
-                    updateRegistrationButtonState(nombreUsuario, correoElectronico, password, isTermsAccepted)
+                    updateRegistrationButtonState(correoElectronico, password, isTermsAccepted, isRegistrationEnabled)
                 },
                 modifier = Modifier.padding(end = 8.dp)
             )
@@ -195,23 +168,72 @@ fun pantallaRegistro(navController: NavHostController) {
         // Botón de registro
         Button(
             onClick = {
-                // Puedes manejar la acción de registro aquí
+                if(updateRegistrationButtonState(correoElectronico, password, isTermsAccepted,isRegistrationEnabled) == true){
+                    viewmodeldememoria.createAccount(correoElectronico,password,navController)
+                }else{
+                    error = true
+                }
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = isRegistrationEnabled
         ) {
             Text(text = "Registrarse")
         }
+        if(error){
+            DialogoAlertaRegistro(onDismissRequest = { error = false }, onConfirmation = { error = false })
+        }
+        }
     }
+private fun  updateRegistrationButtonState(correoElectronico: String
+                                    , password: String
+                                    , isTermsAccepted: Boolean,
+                                           isRegistrationEnabled: Boolean) : Boolean {
+
+    //Variable para validar cada campo
+    var validar:Boolean = false
+
+    // Verificar si todos los campos no están vacíos, que el correo termine en @gmail.com y la contraseña tenga minimo 8 caracteres
+    validar = !(correoElectronico.isEmpty() && password.isEmpty() ||
+              !correoElectronico.contains("@gmail.com") || password.length < 8)
+
+    return validar
 }
 
-private fun updateRegistrationButtonState(nombreUsuario: String, correoElectronico: String, password: String, isTermsAccepted: Boolean) {
-    // Verificar si todos los campos no están vacíos
-    val isNotEmpty = nombreUsuario.isNotEmpty() && correoElectronico.isNotEmpty() && password.isNotEmpty()
-
-    // Verificar que el nombre de usuario no tenga números ni caracteres especiales
-    val isUsernameValid = !nombreUsuario.matches(".*\\d.*".toRegex()) && nombreUsuario.matches("[a-zA-Z]+".toRegex())
-
-    // Verificar que la contraseña tenga una longitud mínima de 8 caracteres
-    val isPasswordValid = password.length >= 8
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogoAlertaRegistro(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String = "¡Alerta!",
+    dialogText: String = "¡Introduce bien los datos, acuerdate de que el correo debe de terminar en @gmail.com y la contraseña minimo 8 caracteres!"
+) {
+    AlertDialog(
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
 }

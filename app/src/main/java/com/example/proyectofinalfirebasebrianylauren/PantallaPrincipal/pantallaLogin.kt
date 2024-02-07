@@ -14,26 +14,33 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectofinalfirebasebrianylauren.R
+import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelLogin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun pantallaLogin(navController: NavHostController) {
 
-    var nombreUsuario by remember { mutableStateOf("") }
+    var correoElectronico by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoginEnabled by remember { mutableStateOf(true) }
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isTermsAccepted by remember { mutableStateOf(false) }
+    var viewmodeldememoria : ViewModelLogin = viewModel()
+    var error by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -67,21 +74,21 @@ fun pantallaLogin(navController: NavHostController) {
         // Espaciador entre la imagen y los campos de entrada
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Campo de entrada para el nombre de usuario
+        // Campo de entrada para el correo electronico
         Column(
             modifier = Modifier
                 .padding(16.dp),
         ) {
             OutlinedTextField(
-                value = nombreUsuario,
+                value = correoElectronico,
                 onValueChange = {
-                    nombreUsuario = it
-                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted,isLoginEnabled)
+                    correoElectronico = it
+                    updateLoginButtonState(correoElectronico, password, isTermsAccepted,isLoginEnabled)
                 },
-                label = { Text(text = "Nombre de Usuario") },
+                label = { Text(text = "Correo Electronico") },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.AccountCircle,
+                        imageVector = Icons.Default.Email,
                         contentDescription = null
                     )
                 },
@@ -106,7 +113,7 @@ fun pantallaLogin(navController: NavHostController) {
                 value = password,
                 onValueChange = {
                     password = it
-                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted,isLoginEnabled)
+                    updateLoginButtonState(correoElectronico, password, isTermsAccepted,isLoginEnabled)
                 },
                 label = { Text(text = "Contraseña") },
                 leadingIcon = {
@@ -151,7 +158,7 @@ fun pantallaLogin(navController: NavHostController) {
                 checked = isTermsAccepted,
                 onCheckedChange = {
                     isTermsAccepted = it
-                    updateLoginButtonState(nombreUsuario, password, isTermsAccepted,isLoginEnabled)
+                    updateLoginButtonState(correoElectronico, password, isTermsAccepted,isLoginEnabled)
                 },
                 modifier = Modifier.padding(end = 8.dp)
             )
@@ -177,26 +184,73 @@ fun pantallaLogin(navController: NavHostController) {
         // Botón de inicio de sesión
         Button(
             onClick = {
-                navController.navigate("pantallaInicio")
+                if(updateLoginButtonState(correoElectronico, password, isTermsAccepted,isLoginEnabled) == true){
+                    viewmodeldememoria.signIn(correoElectronico,password,navController)
+                }else{
+                    error = true
+                }
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = isLoginEnabled
         ) {
             Text(text = "Iniciar sesión")
         }
+        if(error){
+            DialogoAlerta(onDismissRequest = { error = false }, onConfirmation = { error = false })
+        }
+
     }
 }
+private fun  updateLoginButtonState(correoElectronico: String
+                                    , password: String
+                                    , isTermsAccepted: Boolean,
+                                    isLoginEnabled: Boolean) : Boolean {
 
-private fun updateLoginButtonState(nombreUsuario: String, password: String, isTermsAccepted: Boolean, isLoginEnabled: Boolean) {
-    // Verificar si ambos campos no están vacíos
-    val isNotEmpty = nombreUsuario.isNotEmpty() && password.isNotEmpty()
+    //Variable para validar cada campo
+    var validar:Boolean = false
 
-    // Verificar que el nombre de usuario no tenga números ni caracteres especiales
-    val isUsernameValid = !nombreUsuario.matches(".*\\d.*".toRegex()) && nombreUsuario.matches("[a-zA-Z]+".toRegex())
+    // Verificar si todos los campos no están vacíos, que el correo termine en @gmail.com y la contraseña tenga minimo 8 caracteres
+    validar = !(correoElectronico.isEmpty() && password.isEmpty() ||
+              !correoElectronico.contains("@gmail.com") || password.length < 8)
 
-    // Verificar que la contraseña tenga una longitud mínima de 8 caracteres
-    val isPasswordValid = password.length >= 8
+    return validar
+}
 
-    // Actualizar el estado del botón de inicio de sesión
-    val isLoginEnabled = isNotEmpty && isUsernameValid && isPasswordValid && isTermsAccepted
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogoAlerta(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String = "¡Alerta!",
+    dialogText: String = "¡Introduce bien los datos, acuerdate de que el correo debe de terminar en @gmail.com y la contraseña minimo 8 caracteres!"
+) {
+    AlertDialog(
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
 }
