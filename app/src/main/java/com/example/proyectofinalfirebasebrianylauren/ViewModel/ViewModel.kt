@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 
-
+//TODO ESTO DE AQUI ES DEL AUTENTICADOR PARA INICIO Y REGISTRO
 class ViewModelLogin() : ViewModel() {
 
     // [START declare_auth]
@@ -38,10 +38,4 @@ class ViewModelLogin() : ViewModel() {
             }
         // [END sign_in_with_email]
     }
-
-     fun sendEmailVerification() {
-
-        // [END send_email_verification]
-    }
-
 }

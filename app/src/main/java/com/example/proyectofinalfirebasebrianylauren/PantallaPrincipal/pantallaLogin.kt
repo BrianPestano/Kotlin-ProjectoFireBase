@@ -34,14 +34,22 @@ import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelLogin
 @Composable
 fun pantallaLogin(navController: NavHostController) {
 
+    // Estado del correo electrónico, contraseña y botón de inicio de sesión
     var correoElectronico by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoginEnabled by remember { mutableStateOf(true) }
-    var isPasswordVisible by remember { mutableStateOf(false) }
-    var isTermsAccepted by remember { mutableStateOf(false) }
-    var viewmodeldememoria : ViewModelLogin = viewModel()
-    var error by remember { mutableStateOf(false) }
 
+    // Estado para la visibilidad de la contraseña
+    var isPasswordVisible by remember { mutableStateOf(false) }
+
+    // ViewModel para la lógica de inicio de sesión
+    var viewmodeldememoria : ViewModelLogin = viewModel()
+
+    // Estados para manejar diálogos de error y éxito
+    var error by remember { mutableStateOf(false) }
+    var inicio by remember { mutableStateOf(false) }
+
+    // Diseño de la pantalla
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,28 +72,31 @@ fun pantallaLogin(navController: NavHostController) {
 
         // Imagen debajo del texto de bienvenida
         Image(
-            painter = painterResource(id = R.drawable.logo), // Reemplaza con el recurso de tu imagen
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = null,
             modifier = Modifier
-                .size(250.dp) // Ajusta el tamaño de la imagen según tus necesidades
-                .clip(CircleShape) // Opcional: si quieres que la imagen sea circular
+                //Tamaño de la imagen
+                .size(250.dp)
+                //Esto es para que la imagen sea circular
+                .clip(CircleShape)
         )
 
         // Espaciador entre la imagen y los campos de entrada
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Campo de entrada para el correo electronico
+        // Campos de entrada para correo electrónico y contraseña
         Column(
             modifier = Modifier
                 .padding(16.dp),
         ) {
+            // Campo de entrada para el correo electrónico
             OutlinedTextField(
                 value = correoElectronico,
                 onValueChange = {
                     correoElectronico = it
-                    updateLoginButtonState(correoElectronico, password, isTermsAccepted,isLoginEnabled)
+                    updateLoginButtonState(correoElectronico, password, isLoginEnabled)
                 },
-                label = { Text(text = "Correo Electronico") },
+                label = { Text(text = "Correo Electrónico") },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Email,
@@ -100,7 +111,7 @@ fun pantallaLogin(navController: NavHostController) {
                 ),
                 keyboardActions = KeyboardActions(
                     onNext = {
-                        // Mover el foco al siguiente campo o ejecutar una acción
+
                     }
                 )
             )
@@ -113,7 +124,7 @@ fun pantallaLogin(navController: NavHostController) {
                 value = password,
                 onValueChange = {
                     password = it
-                    updateLoginButtonState(correoElectronico, password, isTermsAccepted,isLoginEnabled)
+                    updateLoginButtonState(correoElectronico, password, isLoginEnabled)
                 },
                 label = { Text(text = "Contraseña") },
                 leadingIcon = {
@@ -143,37 +154,15 @@ fun pantallaLogin(navController: NavHostController) {
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        // Puedes manejar la acción de inicio de sesión aquí
+
                     }
                 )
             )
         }
 
-        // Checkbox para aceptar términos
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = isTermsAccepted,
-                onCheckedChange = {
-                    isTermsAccepted = it
-                    updateLoginButtonState(correoElectronico, password, isTermsAccepted,isLoginEnabled)
-                },
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            Text(
-                text = "Acepto los términos y condiciones de la aplicación",
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        // Espaciador entre elementos
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Texto con efecto clickeable simulando un botón
         Text(
-            text = "¿No tienes una cuenta? ¡regístrate ahora!",
+            text = "¿No tienes una cuenta? ¡Regístrate ahora!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable {
@@ -184,9 +173,10 @@ fun pantallaLogin(navController: NavHostController) {
         // Botón de inicio de sesión
         Button(
             onClick = {
-                if(updateLoginButtonState(correoElectronico, password, isTermsAccepted,isLoginEnabled) == true){
-                    viewmodeldememoria.signIn(correoElectronico,password,navController)
-                }else{
+                if (updateLoginButtonState(correoElectronico, password, isLoginEnabled) == true) {
+                    viewmodeldememoria.signIn(correoElectronico, password, navController)
+                    inicio = true
+                } else if (password == "" || correoElectronico == "" || !correoElectronico.contains("@gmail.com") || password.length < 8) {
                     error = true
                 }
             },
@@ -195,23 +185,28 @@ fun pantallaLogin(navController: NavHostController) {
         ) {
             Text(text = "Iniciar sesión")
         }
-        if(error){
+
+        // Mostrar diálogo de error si hay un problema en el inicio de sesión
+        if (error){
             DialogoAlerta(onDismissRequest = { error = false }, onConfirmation = { error = false })
         }
 
+        // Mostrar diálogo de éxito si el inicio de sesión es exitoso
+        if (inicio){
+            DialogoExito(onDismissRequest = { inicio = false }, onConfirmation = { inicio = false })
+        }
     }
 }
-private fun  updateLoginButtonState(correoElectronico: String
-                                    , password: String
-                                    , isTermsAccepted: Boolean,
-                                    isLoginEnabled: Boolean) : Boolean {
 
-    //Variable para validar cada campo
+// Función para actualizar el estado del botón de inicio de sesión
+private fun updateLoginButtonState(correoElectronico: String, password: String, isLoginEnabled: Boolean) : Boolean {
+
+    // Variable para validar cada campo
     var validar:Boolean = false
 
-    // Verificar si todos los campos no están vacíos, que el correo termine en @gmail.com y la contraseña tenga minimo 8 caracteres
+    // Verificar si todos los campos no están vacíos, que el correo termine en @gmail.com y la contraseña tenga al menos 8 caracteres
     validar = !(correoElectronico.isEmpty() && password.isEmpty() ||
-              !correoElectronico.contains("@gmail.com") || password.length < 8)
+            !correoElectronico.contains("@gmail.com") || password.length < 8)
 
     return validar
 }
@@ -222,7 +217,7 @@ fun DialogoAlerta(
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
     dialogTitle: String = "¡Alerta!",
-    dialogText: String = "¡Introduce bien los datos, acuerdate de que el correo debe de terminar en @gmail.com y la contraseña minimo 8 caracteres!"
+    dialogText: String = "¡Introduce bien los datos, acuerdate de que el correo debe de terminar en @gmail.com y la contraseña debe tener al menos 8 caracteres!"
 ) {
     AlertDialog(
         title = {
@@ -240,7 +235,7 @@ fun DialogoAlerta(
                     onConfirmation()
                 }
             ) {
-                Text("Confirm")
+                Text("Confirmar")
             }
         },
         dismissButton = {
@@ -249,7 +244,46 @@ fun DialogoAlerta(
                     onDismissRequest()
                 }
             ) {
-                Text("Dismiss")
+                Text("Descartar")
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogoExito(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String = "¡Inicio de sesión exitoso!",
+    dialogText: String = ""
+) {
+    AlertDialog(
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Descartar")
             }
         }
     )

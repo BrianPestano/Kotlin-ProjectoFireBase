@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+//Funcion de navegacion, para poder navegear de pantalla en pantalla
 @Composable
 fun SetupNavigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "pantallaLogin") {

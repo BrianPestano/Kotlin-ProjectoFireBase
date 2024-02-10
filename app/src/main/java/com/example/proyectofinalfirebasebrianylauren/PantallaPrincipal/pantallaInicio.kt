@@ -26,18 +26,23 @@ import androidx.compose.foundation.lazy.items
 @Composable
 fun pantallaInicio(navController: NavHostController) {
 
+    // Variables de estado
     var buscador by remember { mutableStateOf("") }
     var seleccionPlataforma by remember { mutableStateOf<String?>(null) }
     var menuDesplegado by remember { mutableStateOf(false) }
     var VJSeleccionado by remember { mutableStateOf(mutableSetOf<String>()) }
 
+    // Lista de plataformas
     val plataformas = listOf("PS2", "PS3", "PS4", "PS5", "PC", "XB", "XB360", "XB1", "XBSS", "XBSX", "Android", "NSwitch", "IOS", "Wii")
 
+    // Columna principal
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+
+        // Barra de búsqueda y menú desplegable de plataformas
         SearchBar(
             query = buscador,
             onQueryChange = {
@@ -55,6 +60,7 @@ fun pantallaInicio(navController: NavHostController) {
             active = menuDesplegado,
             onActiveChange = { menuDesplegado = !menuDesplegado }
         ) {
+            // Crear elementos de menú desplegable
             plataformas.forEach { plataforma ->
                 if (plataforma.startsWith(buscador, ignoreCase = true)) {
                     DropdownMenuItem(
@@ -69,6 +75,7 @@ fun pantallaInicio(navController: NavHostController) {
             }
         }
 
+        // Mostrar lista de videojuegos según la plataforma seleccionada
         if (seleccionPlataforma != null) {
             LazyColumn(
                 modifier = Modifier
@@ -76,6 +83,7 @@ fun pantallaInicio(navController: NavHostController) {
                     .weight(1f)
             ) {
                 items(lista.filter { it.plataformas.equals(seleccionPlataforma, ignoreCase = true) }) { videojuego ->
+                    // Llamar a la función PlataformaItem para cada elemento de la lista
                     PlataformaItem(
                         plataforma = videojuego,
                         isChecked = videojuego.nombre in VJSeleccionado,
@@ -99,6 +107,7 @@ fun pantallaInicio(navController: NavHostController) {
                     .weight(1f)
             ) {
                 items(lista) { videojuego ->
+                    // Llamar a la función PlataformaItem para cada elemento de la lista
                     PlataformaItem(
                         plataforma = videojuego,
                         isChecked = videojuego.nombre in VJSeleccionado,
@@ -117,12 +126,14 @@ fun pantallaInicio(navController: NavHostController) {
             }
         }
 
+        // Fila de botones (Añadir y Borrar)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // Botón Añadir
             Button(onClick = {
                 navController.navigate("pantallaCreacionVJ/$seleccionPlataforma") {
                     launchSingleTop = true
@@ -134,6 +145,7 @@ fun pantallaInicio(navController: NavHostController) {
                 Text("Añadir")
             }
 
+            // Botón Borrar
             Button(onClick = {
                 lista.removeAll { it.nombre in VJSeleccionado }
                 VJSeleccionado.clear()
@@ -143,10 +155,12 @@ fun pantallaInicio(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun PlataformaItem(plataforma: infoArray, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit, onClick: () -> Unit) {
     var checked by remember { mutableStateOf(isChecked) }
 
+    // Card que contiene la información de un videojuego
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -156,6 +170,7 @@ fun PlataformaItem(plataforma: infoArray, isChecked: Boolean, onCheckedChange: (
             },
         shape = RoundedCornerShape(8.dp)
     ) {
+        // Row que contiene la información y la checkbox
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -163,11 +178,13 @@ fun PlataformaItem(plataforma: infoArray, isChecked: Boolean, onCheckedChange: (
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Sección de la imagen y el nombre del videojuego
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .weight(1f)
             ) {
+                // Imagen del videojuego
                 Image(
                     painter = painterResource(id = plataforma.imagenes),
                     contentDescription = null,
@@ -177,13 +194,17 @@ fun PlataformaItem(plataforma: infoArray, isChecked: Boolean, onCheckedChange: (
                         .background(MaterialTheme.colorScheme.primary)
                 )
 
+                // Separador
                 Spacer(modifier = Modifier.width(16.dp))
 
+                // Nombre del videojuego
                 Text(text = plataforma.nombre, style = MaterialTheme.typography.titleMedium)
             }
 
+            // Separador
             Spacer(modifier = Modifier.width(16.dp))
 
+            // Checkbox para seleccionar/deseleccionar un videojuego
             Checkbox(
                 checked = checked,
                 onCheckedChange = {
