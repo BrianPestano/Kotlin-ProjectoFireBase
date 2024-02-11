@@ -82,7 +82,7 @@ fun pantallaInicio(navController: NavHostController) {
                     .fillMaxSize()
                     .weight(1f)
             ) {
-                items(lista.filter { it.plataformas.equals(seleccionPlataforma, ignoreCase = true) }) { videojuego ->
+                items(lista.filter { it.plataformas.contains(seleccionPlataforma!!, ignoreCase = true) }) { videojuego ->
                     // Llamar a la función PlataformaItem para cada elemento de la lista
                     PlataformaItem(
                         plataforma = videojuego,
