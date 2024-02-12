@@ -21,7 +21,7 @@ import androidx.navigation.NavHostController
 import com.example.proyectofinalfirebasebrianylauren.R
 import com.example.proyectofinalfirebasebrianylauren.Videojuego.infoArray
 import androidx.compose.foundation.lazy.items
-
+//dasd
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun pantallaInicio(navController: NavHostController) {
