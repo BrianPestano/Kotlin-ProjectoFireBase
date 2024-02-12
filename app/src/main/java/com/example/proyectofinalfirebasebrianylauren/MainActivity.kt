@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.proyectofinalfirebasebrianylauren.ui.theme.ProyectoFinalFireBaseBrianyLaurenTheme
 import androidx.navigation.NavHostController
@@ -22,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navArgument
+import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelFirebase
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +52,8 @@ fun SetupNavigation(navController: NavHostController) {
             pantallaRegistro(navController)
         }
         composable("pantallaInicio"){
-            pantallaInicio(navController)
+            val viewModel: ViewModelFirebase = viewModel()
+            pantallaInicio(navController, viewModel)
         }
         composable("pantallaDetalles/{VJNombre}",
             arguments = listOf(navArgument("VJNombre") { type = NavType.StringType })

@@ -18,3 +18,4 @@ var lista = mutableStateListOf(
             infoArray("Wakfu", R.drawable.wakfu, "29/02/2012", "PC", 76,"MMO"),
             infoArray("Watch Dogs 2", R.drawable.watchdogs2, "15/11/2016", "PS4, PC, XB1", 82,"RPG")
         )
+

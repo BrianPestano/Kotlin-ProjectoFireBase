@@ -1,5 +1,6 @@
 package com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Card
 import androidx.compose.runtime.*
@@ -21,16 +22,18 @@ import androidx.navigation.NavHostController
 import com.example.proyectofinalfirebasebrianylauren.R
 import com.example.proyectofinalfirebasebrianylauren.Videojuego.infoArray
 import androidx.compose.foundation.lazy.items
-//dasd
+import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelFirebase
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun pantallaInicio(navController: NavHostController) {
+fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebase) {
 
     // Variables de estado
     var buscador by remember { mutableStateOf("") }
     var seleccionPlataforma by remember { mutableStateOf<String?>(null) }
     var menuDesplegado by remember { mutableStateOf(false) }
     var VJSeleccionado by remember { mutableStateOf(mutableSetOf<String>()) }
+
 
     // Lista de plataformas
     val plataformas = listOf("PS2", "PS3", "PS4", "PS5", "PC", "XB", "XB360", "XB1", "XBSS", "XBSX", "Android", "NSwitch", "IOS", "Wii")
@@ -147,8 +150,13 @@ fun pantallaInicio(navController: NavHostController) {
 
             // Botón Borrar
             Button(onClick = {
-                lista.removeAll { it.nombre in VJSeleccionado }
+                VJSeleccionado.forEach { nombreJuego ->
+                    viewModel.borrarJuego(nombreJuego)
+                }
                 VJSeleccionado.clear()
+
+                // Log para verificar la lista después de borrar
+                Log.d("pantallaInicio", "Lista actualizada después de borrar juegos: ${viewModel.listaJuegos.value}")
             }) {
                 Text("Borrar")
             }

@@ -13,10 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal.lista
 import com.example.proyectofinalfirebasebrianylauren.R
 import com.example.proyectofinalfirebasebrianylauren.Videojuego.infoArray
+import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelFirebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import java.util.*
 
@@ -25,8 +30,9 @@ import java.util.*
 fun pantallaCreacionVJ(navController: NavHostController) {
     // Declaración y inicialización de variables de estado con remember
     var nombre by remember { mutableStateOf("") }
-    var fechaSeleccionado by remember { mutableStateOf("") }
+    var tipoSeleccionado by remember { mutableStateOf("") }
     var puntuacion by remember { mutableStateOf(1) }
+    var imagenes by remember { mutableStateOf(1) }
     // Lista de plataformas de videojuegos
     val plataformas = listOf("PS2", "PS3", "PS4", "PS5", "PC", "XB", "XB360", "XB1", "XBSS", "XBSX", "Android", "NSwitch", "IOS", "Wii")
     var buscador by remember { mutableStateOf("") }
@@ -34,6 +40,7 @@ fun pantallaCreacionVJ(navController: NavHostController) {
     var menuDesplegado by remember { mutableStateOf(false) }
     // Lista de tipos de videojuegos
     val tipo = listOf("Accion", "RPG", "Aventura", "MMO")
+    var viewModelF : ViewModelFirebase = viewModel()
 
     Column(
         modifier = Modifier
@@ -95,9 +102,9 @@ fun pantallaCreacionVJ(navController: NavHostController) {
                     .padding(vertical = 4.dp)
             ) {
                 Checkbox(
-                    checked = tipo in fechaSeleccionado,
+                    checked = tipo in tipoSeleccionado,
                     onCheckedChange = {
-                        fechaSeleccionado = tipo
+                        tipoSeleccionado = tipo
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -123,11 +130,21 @@ fun pantallaCreacionVJ(navController: NavHostController) {
         ) {
             // Botón para guardar el videojuego y navegar hacia atrás
             IconButton(onClick = {
-                lista.add(
-                    infoArray(nombre, imagenes = R.drawable.kindomhearts, fecha = "",
-                        seleccionPlataforma, puntuacion, fechaSeleccionado)
-                )
-                navController.navigate("pantallaInicio")
+                // Lanzar una corrutina en el hilo principal
+                viewModelF.viewModelScope.launch(Dispatchers.Main) {
+                    // Llamar a la función suspendida anyadirJuego
+                    viewModelF.anyadirJuego(nombre, seleccionPlataforma, tipoSeleccionado, puntuacion, imagenes)
+
+                    lista.add(
+                        infoArray(
+                            nombre, imagenes = R.drawable.kindomhearts, fecha = "",
+                            seleccionPlataforma, puntuacion, tipoSeleccionado
+                        )
+                    )
+
+                    // Navegar hacia atrás
+                    navController.navigate("pantallaInicio")
+                }
             }) {
                 Icon(imageVector = Icons.Outlined.Check, contentDescription = "Save")
             }
