@@ -27,10 +27,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectofinalfirebasebrianylauren.R
+import com.example.proyectofinalfirebasebrianylauren.ViewModel.DetallesVJViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 
 @Composable
-fun pantallaDetalles(navController: NavController, VJ: String?) {
-    val detallesVJ = obtenerDetallesVJ(VJ)
+fun pantallaDetalles(navController: NavController, VJ: String?, detallesVJViewModel : DetallesVJViewModel) {
+    //val detallesVJ = obtenerDetallesVJ(VJ)
+    val detallesVJ by detallesVJViewModel.detallesVJ.observeAsState()
+
+    // Si VJ no es nulo, carga los detalles usando el ViewModel
+    if (VJ != null && detallesVJ == null) {
+        detallesVJViewModel.cargarDetallesVJ(VJ)
+    }
 
     // Composición de la pantalla de detalles
     Column(
@@ -74,7 +83,7 @@ fun pantallaDetalles(navController: NavController, VJ: String?) {
                     .padding(bottom = 15.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            // Muestra los datalles del juegi
+            // Muestra los datalles del juego
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,6 +120,8 @@ data class DetallesVJ(
     val fecha: String,
     val sinopsis: String
 )
+
+
 fun obtenerDetallesVJ(nombreVJ: String?): DetallesVJ? {
     return when (nombreVJ) {
         "Final Fantasy XII" -> DetallesVJ(

@@ -20,9 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.proyectofinalfirebasebrianylauren.ui.theme.ProyectoFinalFireBaseBrianyLaurenTheme
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.navArgument
+import com.example.proyectofinalfirebasebrianylauren.ViewModel.DetallesVJViewModel
 import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelFirebase
 
 class MainActivity : ComponentActivity() {
@@ -55,11 +54,10 @@ fun SetupNavigation(navController: NavHostController) {
             val viewModel: ViewModelFirebase = viewModel()
             pantallaInicio(navController, viewModel)
         }
-        composable("pantallaDetalles/{VJNombre}",
-            arguments = listOf(navArgument("VJNombre") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val VJNombre = backStackEntry.arguments?.getString("VJNombre")
-            pantallaDetalles(navController,VJNombre)
+        composable("pantallaDetalles/{VJ}") { backStackEntry ->
+            val VJ = backStackEntry.arguments?.getString("VJ")
+            val detallesVJViewModel: DetallesVJViewModel = viewModel()
+            pantallaDetalles(navController, VJ, detallesVJViewModel)
         }
         composable("pantallaCreacionVJ/{region}") { backStackEntry ->
             val region = backStackEntry.arguments?.getString("plataforma")

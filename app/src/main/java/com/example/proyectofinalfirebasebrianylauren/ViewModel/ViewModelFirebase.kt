@@ -5,11 +5,9 @@ import androidx.lifecycle.ViewModel
 import com.example.proyectofinalfirebasebrianylauren.Videojuego.Juegos
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 
@@ -53,10 +51,10 @@ class ViewModelFirebase : ViewModel() {
         }
     }
 
-     suspend fun anyadirJuego(nombre: String, plataforma: String, tipo: String, imagenes: Int, valoracion: Int) {
-        val newJuego = Juegos(nombre, plataforma, tipo, imagenes, valoracion)
 
-        // Utiliza el contexto de suspensión
+    suspend fun anyadirJuego(idJuego: String, nombre: String, plataforma: String, tipo: String, valoracion: Int, descripcion: String) {
+        val newJuego = Juegos(idJuego, nombre, plataforma, tipo, valoracion, descripcion)
+
         try {
             val documentReference = conexion.collection("Juego").add(newJuego).await()
             val idJuego = documentReference.id
@@ -64,7 +62,6 @@ class ViewModelFirebase : ViewModel() {
             // Actualiza el campo idJuego con el valor del documento ID recién generado
             conexion.collection("Juego").document(idJuego).update("idJuego", idJuego).await()
         } catch (e: Exception) {
-            // Manejar excepciones si es necesario
             Log.e("ViewModelFirebase", "Error al añadir juego: ${e.message}")
         }
     }

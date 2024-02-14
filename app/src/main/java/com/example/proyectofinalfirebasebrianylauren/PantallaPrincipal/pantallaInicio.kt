@@ -1,13 +1,10 @@
 package com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Card
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.Image
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,36 +13,32 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
-import com.example.proyectofinalfirebasebrianylauren.R
-import com.example.proyectofinalfirebasebrianylauren.Videojuego.infoArray
 import androidx.compose.foundation.lazy.items
+import com.example.proyectofinalfirebasebrianylauren.Videojuego.Juegos
 import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelFirebase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebase) {
-
-    // Variables de estado
     var buscador by remember { mutableStateOf("") }
     var seleccionPlataforma by remember { mutableStateOf<String?>(null) }
     var menuDesplegado by remember { mutableStateOf(false) }
     var VJSeleccionado by remember { mutableStateOf(mutableSetOf<String>()) }
 
+    val plataformas = listOf(
+        "PS2", "PS3", "PS4", "PS5", "PC", "XB", "XB360", "XB1", "XBSS", "XBSX",
+        "Android", "NSwitch", "IOS", "Wii"
+    )
 
-    // Lista de plataformas
-    val plataformas = listOf("PS2", "PS3", "PS4", "PS5", "PC", "XB", "XB360", "XB1", "XBSS", "XBSX", "Android", "NSwitch", "IOS", "Wii")
+    // Llamar a la función crearListener para escuchar cambios en la base de datos
+    viewModel.crearListener()
 
-    // Columna principal
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
-        // Barra de búsqueda y menú desplegable de plataformas
         SearchBar(
             query = buscador,
             onQueryChange = {
@@ -63,7 +56,6 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
             active = menuDesplegado,
             onActiveChange = { menuDesplegado = !menuDesplegado }
         ) {
-            // Crear elementos de menú desplegable
             plataformas.forEach { plataforma ->
                 if (plataforma.startsWith(buscador, ignoreCase = true)) {
                     DropdownMenuItem(
@@ -78,65 +70,44 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
             }
         }
 
-        // Mostrar lista de videojuegos según la plataforma seleccionada
-        if (seleccionPlataforma != null) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            ) {
-                items(lista.filter { it.plataformas.contains(seleccionPlataforma!!, ignoreCase = true) }) { videojuego ->
-                    // Llamar a la función PlataformaItem para cada elemento de la lista
-                    PlataformaItem(
-                        plataforma = videojuego,
-                        isChecked = videojuego.nombre in VJSeleccionado,
-                        onCheckedChange = { isChecked ->
-                            if (isChecked) {
-                                VJSeleccionado.add(videojuego.nombre)
-                            } else {
-                                VJSeleccionado.remove(videojuego.nombre)
-                            }
-                        },
-                        onClick = {
-                            navController.navigate("pantallaDetalles/${videojuego.nombre}")
-                        }
-                    )
-                }
+        // Utilizar el flujo listaJuegos del ViewModel en lugar de la lista estática lista
+        val videojuegos by viewModel.listaJuegos.collectAsState()
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+        ) {
+            val filteredList = if (seleccionPlataforma != null) {
+                videojuegos.filter { it.plataforma.contains(seleccionPlataforma!!, ignoreCase = true) }
+            } else {
+                videojuegos
             }
-        } else if (seleccionPlataforma == null) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            ) {
-                items(lista) { videojuego ->
-                    // Llamar a la función PlataformaItem para cada elemento de la lista
-                    PlataformaItem(
-                        plataforma = videojuego,
-                        isChecked = videojuego.nombre in VJSeleccionado,
-                        onCheckedChange = { isChecked ->
-                            if (isChecked) {
-                                VJSeleccionado.add(videojuego.nombre)
-                            } else {
-                                VJSeleccionado.remove(videojuego.nombre)
-                            }
-                        },
-                        onClick = {
-                            navController.navigate("pantallaDetalles/${videojuego.nombre}")
+
+            items(filteredList) { videojuego ->
+                PlataformaItem(
+                    plataforma = videojuego,
+                    isChecked = videojuego.nombre in VJSeleccionado,
+                    onCheckedChange = { isChecked ->
+                        if (isChecked) {
+                            VJSeleccionado.add(videojuego.nombre)
+                        } else {
+                            VJSeleccionado.remove(videojuego.nombre)
                         }
-                    )
-                }
+                    },
+                    onClick = {
+                        navController.navigate("pantallaDetalles/${videojuego.nombre}")
+                    }
+                )
             }
         }
 
-        // Fila de botones (Añadir y Borrar)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Botón Añadir
             Button(onClick = {
                 navController.navigate("pantallaCreacionVJ/$seleccionPlataforma") {
                     launchSingleTop = true
@@ -148,27 +119,26 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
                 Text("Añadir")
             }
 
-            // Botón Borrar
             Button(onClick = {
                 VJSeleccionado.forEach { nombreJuego ->
                     viewModel.borrarJuego(nombreJuego)
                 }
                 VJSeleccionado.clear()
-
-                // Log para verificar la lista después de borrar
-                Log.d("pantallaInicio", "Lista actualizada después de borrar juegos: ${viewModel.listaJuegos.value}")
             }) {
                 Text("Borrar")
             }
         }
     }
 }
-
 @Composable
-fun PlataformaItem(plataforma: infoArray, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit, onClick: () -> Unit) {
+fun <T : Any> PlataformaItem(
+    plataforma: T,
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    onClick: () -> Unit
+) {
     var checked by remember { mutableStateOf(isChecked) }
 
-    // Card que contiene la información de un videojuego
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -178,7 +148,6 @@ fun PlataformaItem(plataforma: infoArray, isChecked: Boolean, onCheckedChange: (
             },
         shape = RoundedCornerShape(8.dp)
     ) {
-        // Row que contiene la información y la checkbox
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -186,33 +155,17 @@ fun PlataformaItem(plataforma: infoArray, isChecked: Boolean, onCheckedChange: (
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Sección de la imagen y el nombre del videojuego
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .weight(1f)
             ) {
-                // Imagen del videojuego
-                Image(
-                    painter = painterResource(id = plataforma.imagenes),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.primary)
-                )
-
-                // Separador
-                Spacer(modifier = Modifier.width(16.dp))
-
                 // Nombre del videojuego
-                Text(text = plataforma.nombre, style = MaterialTheme.typography.titleMedium)
+                Text(text = obtenerNombreSegunTipo(plataforma), style = MaterialTheme.typography.titleMedium)
             }
 
-            // Separador
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Checkbox para seleccionar/deseleccionar un videojuego
             Checkbox(
                 checked = checked,
                 onCheckedChange = {
@@ -221,5 +174,13 @@ fun PlataformaItem(plataforma: infoArray, isChecked: Boolean, onCheckedChange: (
                 }
             )
         }
+    }
+}
+
+// Funciones de ejemplo para adaptar según tu modelo de datos
+private fun obtenerNombreSegunTipo(juego: Any): String {
+    return when (juego) {
+        is Juegos -> juego.nombre
+        else -> "Nombre Desconocido"
     }
 }

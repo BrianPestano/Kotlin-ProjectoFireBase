@@ -2,7 +2,6 @@ package com.example.proyectofinalfirebasebrianylauren.CreacionVideoJuego
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -30,13 +29,16 @@ import java.util.*
 fun pantallaCreacionVJ(navController: NavHostController) {
     // Declaración y inicialización de variables de estado con remember
     var nombre by remember { mutableStateOf("") }
+    var descripcion by remember { mutableStateOf("") }
     var tipoSeleccionado by remember { mutableStateOf("") }
     var puntuacion by remember { mutableStateOf(1) }
-    var imagenes by remember { mutableStateOf(1) }
+    var detalles by remember { mutableStateOf("") }
+    var detallesConfirmados by remember { mutableStateOf<String?>(null) }
+
     // Lista de plataformas de videojuegos
     val plataformas = listOf("PS2", "PS3", "PS4", "PS5", "PC", "XB", "XB360", "XB1", "XBSS", "XBSX", "Android", "NSwitch", "IOS", "Wii")
     var buscador by remember { mutableStateOf("") }
-    var seleccionPlataforma by remember { mutableStateOf<String>("PC") }
+    var seleccionPlataforma by remember { mutableStateOf("PC") }
     var menuDesplegado by remember { mutableStateOf(false) }
     // Lista de tipos de videojuegos
     val tipo = listOf("Accion", "RPG", "Aventura", "MMO")
@@ -121,6 +123,34 @@ fun pantallaCreacionVJ(navController: NavHostController) {
             valueRange = 1f..100f,
             steps = 99
         )
+        // Cuadro de texto para los detalles del videojuego
+        OutlinedTextField(
+            value = detalles,
+            onValueChange = { detalles = it },
+            label = { Text("Detalles del VideoJuego") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            )
+        )
+        // Botón para confirmar los detalles
+        Button(
+            onClick = {
+                detallesConfirmados = detalles
+            },
+            modifier = Modifier
+                .align(Alignment.End)
+        ) {
+            Text("Confirmar Detalles")
+        }
+
+        // Mostrar los detalles confirmados
+        detallesConfirmados?.let { detalles ->
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Detalles confirmados: $detalles", style = MaterialTheme.typography.titleMedium)
+        }
         // Botones de navegación
         Row(
             modifier = Modifier
@@ -133,7 +163,7 @@ fun pantallaCreacionVJ(navController: NavHostController) {
                 // Lanzar una corrutina en el hilo principal
                 viewModelF.viewModelScope.launch(Dispatchers.Main) {
                     // Llamar a la función suspendida anyadirJuego
-                    viewModelF.anyadirJuego(nombre, seleccionPlataforma, tipoSeleccionado, puntuacion, imagenes)
+                    viewModelF.anyadirJuego("",nombre, seleccionPlataforma, tipoSeleccionado, puntuacion, detalles)
 
                     lista.add(
                         infoArray(
