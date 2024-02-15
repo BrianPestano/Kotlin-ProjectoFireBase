@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 
-//TODO ESTO DE AQUI ES DEL AUTENTICADOR PARA INICIO Y REGISTRO
+//TODO ESTO DE AQUI ES DEL AUTENTICADOR PARA INICIO Y REGISTRO PILLADO DE UN FORO Y CONFIGURADO CON LA AYUDA DEL PROFE
 class ViewModelLogin() : ViewModel() {
 
     // [START declare_auth]

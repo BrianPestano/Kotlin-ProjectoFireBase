@@ -27,7 +27,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectofinalfirebasebrianylauren.R
 import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelLogin
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun pantallaRegistro(navController: NavHostController) {
 
@@ -42,7 +41,6 @@ fun pantallaRegistro(navController: NavHostController) {
     var viewmodeldememoria : ViewModelLogin = viewModel()
     var error by remember { mutableStateOf(false) }
 
-    // Diseño de la pantalla
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,20 +48,16 @@ fun pantallaRegistro(navController: NavHostController) {
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Espaciador para empujar el contenido hacia abajo
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Texto de bienvenida
         Text(
             text = "¡Regístrate en la aplicación para empezar!",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Espaciador para separar el mensaje y la imagen
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Imagen debajo del texto de bienvenida
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = null,
@@ -74,15 +68,12 @@ fun pantallaRegistro(navController: NavHostController) {
                 .clip(CircleShape)
         )
 
-        // Espaciador entre la imagen y los campos de entrada
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Columna para los campos de entrada de correo electrónico y contraseña
         Column(
             modifier = Modifier
                 .padding(16.dp),
         ) {
-            // Campo de entrada para el correo electrónico
             OutlinedTextField(
                 value = correoElectronico,
                 onValueChange = {
@@ -109,10 +100,8 @@ fun pantallaRegistro(navController: NavHostController) {
                 )
             )
 
-            // Espaciador entre elementos
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Campo de entrada para la contraseña
             OutlinedTextField(
                 value = password,
                 onValueChange = {
@@ -213,7 +202,6 @@ private fun updateRegistrationButtonState(correoElectronico: String, password: S
     return validar
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogoAlertaRegistro(
     onDismissRequest: () -> Unit,
@@ -252,7 +240,6 @@ fun DialogoAlertaRegistro(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogoRegistro(
     onDismissRequest: () -> Unit,

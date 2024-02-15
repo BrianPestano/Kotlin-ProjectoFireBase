@@ -49,7 +49,7 @@ fun pantallaLogin(navController: NavHostController) {
     var error by remember { mutableStateOf(false) }
     var inicio by remember { mutableStateOf(false) }
 
-    // Diseño de la pantalla
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,20 +57,19 @@ fun pantallaLogin(navController: NavHostController) {
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Espaciador para empujar el contenido hacia abajo
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Texto de bienvenida
+
         Text(
             text = "¡Bienvenido a la aplicación, introduce tus datos para acceder!",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Espaciador para separar el mensaje y la imagen
+
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Imagen debajo del texto de bienvenida
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = null,
@@ -81,15 +80,12 @@ fun pantallaLogin(navController: NavHostController) {
                 .clip(CircleShape)
         )
 
-        // Espaciador entre la imagen y los campos de entrada
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Campos de entrada para correo electrónico y contraseña
         Column(
             modifier = Modifier
                 .padding(16.dp),
         ) {
-            // Campo de entrada para el correo electrónico
             OutlinedTextField(
                 value = correoElectronico,
                 onValueChange = {
@@ -116,10 +112,8 @@ fun pantallaLogin(navController: NavHostController) {
                 )
             )
 
-            // Espaciador entre elementos
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Campo de entrada para la contraseña
             OutlinedTextField(
                 value = password,
                 onValueChange = {
@@ -211,7 +205,6 @@ private fun updateLoginButtonState(correoElectronico: String, password: String, 
     return validar
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogoAlerta(
     onDismissRequest: () -> Unit,
@@ -249,8 +242,6 @@ fun DialogoAlerta(
         }
     )
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogoExito(
     onDismissRequest: () -> Unit,

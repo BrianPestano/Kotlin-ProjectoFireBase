@@ -15,9 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal.lista
-import com.example.proyectofinalfirebasebrianylauren.R
-import com.example.proyectofinalfirebasebrianylauren.Videojuego.infoArray
 import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelFirebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +26,6 @@ import java.util.*
 fun pantallaCreacionVJ(navController: NavHostController) {
     // Declaración y inicialización de variables de estado con remember
     var nombre by remember { mutableStateOf("") }
-    var descripcion by remember { mutableStateOf("") }
     var tipoSeleccionado by remember { mutableStateOf("") }
     var puntuacion by remember { mutableStateOf(1) }
     var detalles by remember { mutableStateOf("") }
@@ -40,6 +36,7 @@ fun pantallaCreacionVJ(navController: NavHostController) {
     var buscador by remember { mutableStateOf("") }
     var seleccionPlataforma by remember { mutableStateOf("PC") }
     var menuDesplegado by remember { mutableStateOf(false) }
+
     // Lista de tipos de videojuegos
     val tipo = listOf("Accion", "RPG", "Aventura", "MMO")
     var viewModelF : ViewModelFirebase = viewModel()
@@ -49,7 +46,7 @@ fun pantallaCreacionVJ(navController: NavHostController) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Cuadro de texto para el nombre del videojuego
+        // Texto para poner el nombre del juego
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
@@ -61,12 +58,11 @@ fun pantallaCreacionVJ(navController: NavHostController) {
                 imeAction = ImeAction.Done
             )
         )
-        // Cuadro de texto y menú desplegable para la plataforma
+        //Menu desplegable para la plataforma
         SearchBar(
             query = buscador,
             onQueryChange = {
                 buscador = it
-                // Cerrar el menú desplegable si la búsqueda está vacía
                 if (it.isEmpty()) {
                     seleccionPlataforma = ""
                 }
@@ -81,7 +77,6 @@ fun pantallaCreacionVJ(navController: NavHostController) {
                 plataformas.filter { plataforma -> plataforma.startsWith(buscador, ignoreCase = true) }
                     .forEach { plataforma ->
                         Log.d("pantallaCreacionVJ", "plataforma: $plataforma")
-                        // Elemento del menú desplegable para seleccionar plataforma
                         DropdownMenuItem(
                             onClick = {
                                 seleccionPlataforma = plataforma
@@ -93,7 +88,7 @@ fun pantallaCreacionVJ(navController: NavHostController) {
                     }
             }
         }
-        // Grupo de opciones (Checkbox) para los tipos de videojuegos
+        // Grupo de opciones para los tipos de videojuegos
         Spacer(modifier = Modifier.height(16.dp))
         Text("Tipo(s):")
         tipo.forEach { tipo ->
@@ -113,8 +108,9 @@ fun pantallaCreacionVJ(navController: NavHostController) {
                 Text(text = tipo)
             }
         }
-        //Espaciador
+
         Spacer(modifier = Modifier.height(16.dp))
+
         // Slider para la valoración del videojuego
         Text("Valoracion: $puntuacion")
         Slider(
@@ -158,21 +154,12 @@ fun pantallaCreacionVJ(navController: NavHostController) {
                 .padding(top = 16.dp),
             horizontalArrangement = Arrangement.End
         ) {
-            // Botón para guardar el videojuego y navegar hacia atrás
             IconButton(onClick = {
                 // Lanzar una corrutina en el hilo principal
                 viewModelF.viewModelScope.launch(Dispatchers.Main) {
                     // Llamar a la función suspendida anyadirJuego
                     viewModelF.anyadirJuego("",nombre, seleccionPlataforma, tipoSeleccionado, puntuacion, detalles)
 
-                    lista.add(
-                        infoArray(
-                            nombre, imagenes = R.drawable.kindomhearts, fecha = "",
-                            seleccionPlataforma, puntuacion, tipoSeleccionado
-                        )
-                    )
-
-                    // Navegar hacia atrás
                     navController.navigate("pantallaInicio")
                 }
             }) {

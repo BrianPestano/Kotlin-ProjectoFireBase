@@ -31,7 +31,7 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
         "Android", "NSwitch", "IOS", "Wii"
     )
 
-    // Llamar a la función crearListener para escuchar cambios en la base de datos
+    //Llamamos a la función crearListener para escuchar cambios en la base de datos(gracias profe)
     viewModel.crearListener()
 
     Column(
@@ -70,7 +70,7 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
             }
         }
 
-        // Utilizar el flujo listaJuegos del ViewModel en lugar de la lista estática lista
+        // Utilizamos el flujo listaJuegos del ViewModel
         val videojuegos by viewModel.listaJuegos.collectAsState()
 
         LazyColumn(
@@ -79,7 +79,12 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
                 .weight(1f)
         ) {
             val filteredList = if (seleccionPlataforma != null) {
-                videojuegos.filter { it.plataforma.contains(seleccionPlataforma!!, ignoreCase = true) }
+                videojuegos.filter {
+                    it.plataforma.contains(
+                        seleccionPlataforma!!,
+                        ignoreCase = true
+                    )
+                }
             } else {
                 videojuegos
             }
@@ -96,6 +101,8 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
                         }
                     },
                     onClick = {
+                        // Asignamos el juego seleccionado al ViewModel antes de navegar
+                        viewModel.asignarJuegoSeleccionado(videojuego)
                         navController.navigate("pantallaDetalles/${videojuego.nombre}")
                     }
                 )
@@ -130,6 +137,7 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
         }
     }
 }
+
 @Composable
 fun <T : Any> PlataformaItem(
     plataforma: T,
@@ -176,8 +184,6 @@ fun <T : Any> PlataformaItem(
         }
     }
 }
-
-// Funciones de ejemplo para adaptar según tu modelo de datos
 private fun obtenerNombreSegunTipo(juego: Any): String {
     return when (juego) {
         is Juegos -> juego.nombre
