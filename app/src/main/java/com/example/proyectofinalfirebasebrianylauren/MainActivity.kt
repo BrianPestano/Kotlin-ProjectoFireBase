@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal.pantallaLogin
 import com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal.pantallaInicio
 import com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal.pantallaRegistro
-import com.example.proyectofinalfirebasebrianylauren.PantallaDetalles.pantallaDetalles
+import com.example.proyectofinalfirebasebrianylauren.PantallaActualizar.pantallaDetalles
 import com.example.proyectofinalfirebasebrianylauren.CreacionVideoJuego.pantallaCreacionVJ
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +21,7 @@ import com.example.proyectofinalfirebasebrianylauren.ui.theme.ProyectoFinalFireB
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
+import com.example.proyectofinalfirebasebrianylauren.PantallaCreditos.pantallaCreditos
 import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelFirebase
 
 class MainActivity : ComponentActivity() {
@@ -52,6 +53,10 @@ fun SetupNavigation(navController: NavHostController) {
         composable("pantallaInicio"){
             val viewModel: ViewModelFirebase = viewModel()
             pantallaInicio(navController, viewModel)
+        }
+
+        composable("pantallaCreditos"){
+            pantallaCreditos(navController)
         }
         composable("pantallaDetalles/{VJ}") { backStackEntry ->
             pantallaDetalles(navController)

@@ -80,13 +80,13 @@ class ViewModelFirebase : ViewModel() {
         juegoSeleccionado = juego
     }
 
-    suspend fun actualizarDescripcion(detalles: String) {
+    fun actualizarDescripcion(detalles: String) {
         try {
             val idJuego = juegoSeleccionado?.idJuego
 
             if (!idJuego.isNullOrEmpty()) {
                 // Actualiza la descripción del juego utilizando el ID proporcionado
-                conexion.collection("Juego").document(idJuego).update("descripcion", detalles).await()
+                conexion.collection("Juego").document(idJuego).update("descripcion", detalles)
 
                 // Actualizar la lista local si es necesario
                 val index = juegos.indexOfFirst { it.idJuego == idJuego }

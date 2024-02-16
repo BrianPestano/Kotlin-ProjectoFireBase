@@ -1,5 +1,6 @@
 package com.example.proyectofinalfirebasebrianylauren.PantallaPrincipal
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Card
 import androidx.compose.runtime.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.graphics.Color
 import com.example.proyectofinalfirebasebrianylauren.Videojuego.Juegos
 import com.example.proyectofinalfirebasebrianylauren.ViewModel.ViewModelFirebase
 
@@ -124,6 +126,12 @@ fun pantallaInicio(navController: NavHostController, viewModel: ViewModelFirebas
                 }
             }) {
                 Text("Añadir")
+            }
+
+            Button(onClick = {
+                navController.navigate("pantallaCreditos") {}
+            }) {
+                Text("Creditos")
             }
 
             Button(onClick = {
