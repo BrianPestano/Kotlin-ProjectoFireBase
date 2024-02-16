@@ -19,7 +19,7 @@ fun pantallaCreditos(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.DarkGray)
+            .background(Color(0xFFFDFDFD))
     ) {
         Column(
             modifier = Modifier
@@ -33,20 +33,20 @@ fun pantallaCreditos(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                color = Color.White
+                color = Color.Black
             )
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = Color.Gray)
+                    .background(Color(0xFFFFE6E7))
                     .padding(16.dp)
             ) {
                 // Contenido de los créditos
 
                 // Desarrolladores
                 item {
-                    Text("Desarrolladores:", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    Text("Desarrolladores:", style = MaterialTheme.typography.titleMedium, color = Color.Black)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Brian Pestano De La Rosa", style = MaterialTheme.typography.bodyMedium)
                     Text("Lauren Cristo Rodríguez Cabrera", style = MaterialTheme.typography.bodyMedium)
@@ -55,7 +55,7 @@ fun pantallaCreditos(navController: NavHostController) {
 
                 // Año de la última versión estable
                 item {
-                    Text("Año de la última versión estable:", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    Text("Año de la última versión estable:", style = MaterialTheme.typography.titleMedium, color = Color.Black)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("2024", style = MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.height(16.dp))
@@ -63,7 +63,7 @@ fun pantallaCreditos(navController: NavHostController) {
 
                 // Información adicional
                 item {
-                    Text("Información adicional:", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    Text("Información adicional:", style = MaterialTheme.typography.titleMedium, color = Color.Black)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Esta aplicación fue creada como parte de un proyecto final para aprender y aplicar conceptos de desarrollo de aplicaciones móviles.", style = MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.height(4.dp))
